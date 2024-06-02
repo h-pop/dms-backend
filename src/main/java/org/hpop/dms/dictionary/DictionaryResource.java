@@ -1,4 +1,4 @@
-package org.hpop.dms;
+package org.hpop.dms.dictionary;
 
 import io.quarkus.arc.impl.Sets;
 import jakarta.ws.rs.DELETE;

@@ -1,4 +1,4 @@
-package org.hpop.dms;
+package org.hpop.dms.dictionary;
 
 import java.util.Set;
 
