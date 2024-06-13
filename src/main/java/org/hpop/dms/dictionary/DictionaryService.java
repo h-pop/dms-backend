@@ -1,6 +1,7 @@
 package org.hpop.dms.dictionary;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,5 +24,32 @@ public class DictionaryService {
 
   public List<Dictionary> findAll() {
     return dictionaryRepository.findAll().stream().map(dictionaryMapper::toDomain).collect(Collectors.toList());
+  }
+
+  @Transactional
+  public Dictionary update(Dictionary dictionary) {
+    if (dictionary.getId() == null) {
+      throw new RuntimeException("Dictionary does not have id - cannot update!");
+    }
+    Optional<DictionaryEntity> optional = this.dictionaryRepository.findByIdOptional(dictionary.getId());
+    if (optional.isEmpty()) {
+      throw new RuntimeException(String.format("No Dictionary found for id[%s]", dictionary.getId()));
+    }
+    DictionaryEntity dictionaryEntity = optional.get();
+    dictionaryEntity.setName(dictionary.getName());
+    dictionaryRepository.persist(dictionaryEntity);
+    return dictionaryMapper.toDomain(dictionaryEntity);
+  }
+
+  @Transactional
+  public boolean delete(Integer dictionaryId) {
+    return dictionaryRepository.deleteById(dictionaryId);
+  }
+
+  @Transactional
+  public Dictionary create(Dictionary dictionary) {
+    DictionaryEntity dictionaryEntity = dictionaryMapper.toEntity(dictionary);
+    dictionaryRepository.persist(dictionaryEntity);
+    return dictionaryMapper.toDomain(dictionaryEntity);
   }
 }

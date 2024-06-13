@@ -1,10 +1,6 @@
 package org.hpop.dms.dictionary;
 
-import io.quarkus.arc.impl.Sets;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
 import java.util.*;
@@ -32,16 +28,18 @@ public class DictionaryResource {
   }
 
   @POST
-  public void update(Dictionary dictionary) {
-    // TODO HP handle update
-//    this.delete(dictionary.getId());
-//    this.dictionaries.add(dictionary);
+  public Dictionary post(Dictionary dictionary) {
+    return this.dictionaryService.create(dictionary);
+  }
+
+  @PUT
+  public Dictionary put(Dictionary dictionary) {
+    return this.dictionaryService.update(dictionary);
   }
 
   @DELETE
   @Path("{dictionaryId}")
-  public void delete(Integer dictionaryId) {
-    // TODO HP handle delete
-//    this.dictionaries.removeIf(d -> d.getId().equals(dictionaryId));
+  public Boolean delete(Integer dictionaryId) {
+    return this.dictionaryService.delete(dictionaryId);
   }
 }
