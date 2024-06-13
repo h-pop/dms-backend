@@ -1,0 +1,30 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="1" author="hpop">
+        <createSequence sequenceName="dictionary_seq" startValue="10000" incrementBy="50"/>
+        <createTable tableName="dictionary">
+            <column name="ID" type="INTEGER" defaultValueComputed="nextval('dictionary_seq')">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createSequence sequenceName="dictionary_value_seq" startValue="10000" incrementBy="50"/>
+        <createTable tableName="dictionary_value" >
+            <column name="ID" type="INTEGER" defaultValueComputed="nextval('dictionary_value_seq')">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="VALUE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DICTIONARY_ID" type="INTEGER">
+                <constraints foreignKeyName="fk_dictionary" references="dictionary(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
