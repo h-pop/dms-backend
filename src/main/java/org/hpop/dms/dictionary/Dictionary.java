@@ -1,10 +1,16 @@
 package org.hpop.dms.dictionary;
 
+import org.hpop.dms.dictionary.value.DictionaryValue;
+
+import java.util.List;
+
 public class Dictionary {
 
   private Integer id;
 
   private String name;
+
+  private List<DictionaryValue> dictionaryValues;
 
   public Integer getId() {
     return id;
@@ -20,5 +26,13 @@ public class Dictionary {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public List<DictionaryValue> getDictionaryValues() {
+    return dictionaryValues;
+  }
+
+  public void setDictionaryValues(List<DictionaryValue> dictionaryValues) {
+    this.dictionaryValues = dictionaryValues;
   }
 }
