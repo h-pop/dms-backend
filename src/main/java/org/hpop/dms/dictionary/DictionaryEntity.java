@@ -17,8 +17,7 @@ public class DictionaryEntity {
   @Column(name = "name")
   private String name;
 
-  @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-  @JoinColumn(name="dictionary_id")
+  @OneToMany(mappedBy = "dictionaryId", cascade = CascadeType.ALL)
   private List<DictionaryValueEntity> dictionaryValues;
 
   public Integer getId() {

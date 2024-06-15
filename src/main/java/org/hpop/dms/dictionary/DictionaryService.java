@@ -19,7 +19,7 @@ public class DictionaryService {
   }
 
   public Optional<Dictionary> findById(Integer dictionaryId) {
-    return dictionaryRepository.findByIdOptional(dictionaryId).map(dictionaryMapper::toDomain);
+    return dictionaryRepository.findWithChildren(dictionaryId).map(dictionaryMapper::toDomainFull);
   }
 
   public List<Dictionary> findAll() {
