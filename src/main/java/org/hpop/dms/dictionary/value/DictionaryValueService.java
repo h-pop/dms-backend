@@ -3,6 +3,7 @@ package org.hpop.dms.dictionary.value;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -16,27 +17,36 @@ public class DictionaryValueService {
     this.dictionaryValueRepository = dictionaryValueRepository;
   }
 
-//  public List<DictionaryValueEntity> updateAll(List<DictionaryValueEntity> dictionaryValues) {
-//    return dictionaryValues.stream()
-//      .map(this::update)
-//      .collect(Collectors.toList());
-//  }
-//
-//  private DictionaryValueEntity update(DictionaryValueEntity dictionaryValueEntity) {
-//    if (dictionaryValueEntity.getId() == null) {
-//      DictionaryValueEntity dictionaryValueEntity = dictionaryValueMapper.toEntity(dictionaryValueEntity);
-//      dictionaryValueRepository.persist(dictionaryValueEntity);
-//      return dictionaryValue;
-//    }
-//    return null;
-//  }
-
-  public List<DictionaryValue> createAll(final Integer dictionaryId, List<DictionaryValue> dictionaryValues) {
+  public List<DictionaryValue> updateAll(Integer dictionaryId, List<DictionaryValue> dictionaryValues) {
     return dictionaryValues.stream()
-      .map(dictionaryValueMapper::toEntity)
-      .peek(dve -> dve.setDictionaryId(dictionaryId))
-      .peek(dictionaryValueRepository::persist)
-      .map(dictionaryValueMapper::toDomain)
+      .map(dv -> update(dictionaryId, dv))
       .collect(Collectors.toList());
+  }
+
+  private DictionaryValue update(Integer dictionaryId, DictionaryValue dictionaryValue) {
+    if (dictionaryValue.getId() == null) {
+      return create(dictionaryId, dictionaryValue);
+    }
+    Optional<DictionaryValueEntity> optional = dictionaryValueRepository.findByIdOptional(dictionaryValue.getId());
+    if (optional.isEmpty()) {
+      throw new RuntimeException(String.format("No Dictionary value found for id[%s]", dictionaryValue.getId()));
+    }
+    DictionaryValueEntity entity = optional.get();
+    entity.setValue(dictionaryValue.getValue());
+    dictionaryValueRepository.persist(entity);
+    return dictionaryValueMapper.toDomain(entity);
+  }
+
+  public List<DictionaryValue> createAll(Integer dictionaryId, List<DictionaryValue> dictionaryValues) {
+    return dictionaryValues.stream()
+      .map(dv -> create(dictionaryId, dv))
+      .collect(Collectors.toList());
+  }
+
+  public DictionaryValue create(Integer dictionaryId, DictionaryValue dictionaryValue) {
+    DictionaryValueEntity dictionaryValueEntity = dictionaryValueMapper.toEntity(dictionaryValue);
+    dictionaryValueEntity.setDictionaryId(dictionaryId);
+    dictionaryValueRepository.persist(dictionaryValueEntity);
+    return dictionaryValueMapper.toDomain(dictionaryValueEntity);
   }
 }

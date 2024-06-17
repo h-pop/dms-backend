@@ -7,6 +7,7 @@ import org.hpop.dms.dictionary.value.DictionaryValueService;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @ApplicationScoped
 public class DictionaryService {
@@ -41,7 +42,11 @@ public class DictionaryService {
     DictionaryEntity dictionaryEntity = optional.get();
     dictionaryEntity.setName(dictionary.getName());
     dictionaryRepository.persist(dictionaryEntity);
-    return dictionaryMapper.toDomain(dictionaryEntity);
+
+    var dictionaryValues = dictionaryValueService.updateAll(dictionaryEntity.getId(), dictionary.getDictionaryValues());
+    var result = dictionaryMapper.toDomainFull(dictionaryEntity);
+    result.setDictionaryValues(dictionaryValues);
+    return result;
   }
 
   @Transactional
@@ -51,10 +56,15 @@ public class DictionaryService {
 
   @Transactional
   public Dictionary create(Dictionary dictionary) {
-    DictionaryEntity dictionaryEntity = dictionaryMapper.toEntity(dictionary);
-    dictionaryRepository.persist(dictionaryEntity);
-    var result = dictionaryMapper.toDomainFull(dictionaryEntity);
-    result.setDictionaryValues(dictionaryValueService.createAll(dictionaryEntity.getId(), dictionary.getDictionaryValues()));
-    return result;
+    return Stream.of(dictionary)
+      .map(dictionaryMapper::toEntity)
+      .peek(dictionaryRepository::persist)
+      .map(dictionaryMapper::toDomainFull)
+      .peek(result -> result.setDictionaryValues(dictionaryValueService.createAll(
+        result.getId(),
+        dictionary.getDictionaryValues()
+      )))
+      .findFirst()
+      .orElseThrow(() -> new RuntimeException("Failed to create Dictionary"));
   }
 }
