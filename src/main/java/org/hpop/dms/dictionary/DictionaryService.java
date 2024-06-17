@@ -2,6 +2,7 @@ package org.hpop.dms.dictionary;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
+import org.hpop.dms.dictionary.value.DictionaryValueService;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,10 +13,12 @@ public class DictionaryService {
 
   private final DictionaryRepository dictionaryRepository;
   private final DictionaryMapper dictionaryMapper;
+  private final DictionaryValueService dictionaryValueService;
 
-  public DictionaryService(DictionaryRepository dictionaryRepository, DictionaryMapper dictionaryMapper) {
+  public DictionaryService(DictionaryRepository dictionaryRepository, DictionaryMapper dictionaryMapper, DictionaryValueService dictionaryValueService) {
     this.dictionaryRepository = dictionaryRepository;
     this.dictionaryMapper = dictionaryMapper;
+    this.dictionaryValueService = dictionaryValueService;
   }
 
   public Optional<Dictionary> findById(Integer dictionaryId) {
@@ -50,6 +53,8 @@ public class DictionaryService {
   public Dictionary create(Dictionary dictionary) {
     DictionaryEntity dictionaryEntity = dictionaryMapper.toEntity(dictionary);
     dictionaryRepository.persist(dictionaryEntity);
-    return dictionaryMapper.toDomain(dictionaryEntity);
+    var result = dictionaryMapper.toDomainFull(dictionaryEntity);
+    result.setDictionaryValues(dictionaryValueService.createAll(dictionaryEntity.getId(), dictionary.getDictionaryValues()));
+    return result;
   }
 }

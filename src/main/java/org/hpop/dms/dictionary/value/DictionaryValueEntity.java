@@ -1,6 +1,7 @@
 package org.hpop.dms.dictionary.value;
 
 import jakarta.persistence.*;
+import org.hpop.dms.dictionary.DictionaryEntity;
 
 @Entity(name="DictionaryValue")
 @Table(name="dictionary_value")

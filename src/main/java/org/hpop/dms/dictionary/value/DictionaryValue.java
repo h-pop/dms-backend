@@ -6,6 +6,8 @@ public class DictionaryValue {
 
   private String value;
 
+  private Integer dictionaryId;
+
   public Integer getId() {
     return id;
   }
@@ -20,5 +22,13 @@ public class DictionaryValue {
 
   public void setValue(String value) {
     this.value = value;
+  }
+
+  public Integer getDictionaryId() {
+    return dictionaryId;
+  }
+
+  public void setDictionaryId(Integer dictionaryId) {
+    this.dictionaryId = dictionaryId;
   }
 }
