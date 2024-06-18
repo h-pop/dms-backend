@@ -51,6 +51,7 @@ public class DictionaryService {
 
   @Transactional
   public boolean delete(Integer dictionaryId) {
+    dictionaryValueService.deleteByDictionaryId(dictionaryId);
     return dictionaryRepository.deleteById(dictionaryId);
   }
 

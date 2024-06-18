@@ -49,4 +49,8 @@ public class DictionaryValueService {
     dictionaryValueRepository.persist(dictionaryValueEntity);
     return dictionaryValueMapper.toDomain(dictionaryValueEntity);
   }
+
+  public long deleteByDictionaryId(Integer dictionaryId) {
+    return dictionaryValueRepository.deleteByDictionaryId(dictionaryId);
+  }
 }
