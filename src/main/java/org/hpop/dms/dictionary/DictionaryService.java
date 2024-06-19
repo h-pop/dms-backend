@@ -2,6 +2,7 @@ package org.hpop.dms.dictionary;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
+import org.hpop.dms.dictionary.value.DictionaryValue;
 import org.hpop.dms.dictionary.value.DictionaryValueService;
 
 import java.util.List;
@@ -43,8 +44,9 @@ public class DictionaryService {
     dictionaryEntity.setName(dictionary.getName());
     dictionaryRepository.persist(dictionaryEntity);
 
-    var dictionaryValues = dictionaryValueService.updateAll(dictionaryEntity.getId(), dictionary.getDictionaryValues());
-    var result = dictionaryMapper.toDomainFull(dictionaryEntity);
+    List<DictionaryValue> dictionaryValues = dictionaryValueService.updateAll(dictionaryEntity.getId(), dictionaryEntity.getDictionaryValues(), dictionary.getDictionaryValues());
+
+    Dictionary result = dictionaryMapper.toDomainFull(dictionaryEntity);
     result.setDictionaryValues(dictionaryValues);
     return result;
   }

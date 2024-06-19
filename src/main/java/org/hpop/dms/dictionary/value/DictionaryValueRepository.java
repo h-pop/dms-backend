@@ -3,6 +3,8 @@ package org.hpop.dms.dictionary.value;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
 
+import java.util.List;
+
 @ApplicationScoped
 public class DictionaryValueRepository implements PanacheRepositoryBase<DictionaryValueEntity, Integer> {
 

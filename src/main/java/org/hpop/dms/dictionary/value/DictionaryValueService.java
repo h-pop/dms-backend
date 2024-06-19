@@ -12,12 +12,20 @@ public class DictionaryValueService {
   private final DictionaryValueMapper dictionaryValueMapper;
 
   private final DictionaryValueRepository dictionaryValueRepository;
+
   public DictionaryValueService(DictionaryValueMapper dictionaryValueMapper, DictionaryValueRepository dictionaryValueRepository) {
     this.dictionaryValueMapper = dictionaryValueMapper;
     this.dictionaryValueRepository = dictionaryValueRepository;
   }
 
-  public List<DictionaryValue> updateAll(Integer dictionaryId, List<DictionaryValue> dictionaryValues) {
+  public List<DictionaryValue> updateAll(Integer dictionaryId, List<DictionaryValueEntity> values, List<DictionaryValue> dictionaryValues) {
+    // delete missing
+    List<Integer> dictionaryValueIds = dictionaryValues.stream().map(DictionaryValue::getId).toList();
+    values.stream()
+      .filter(dve -> !dictionaryValueIds.contains(dve.getId()))
+      .forEach(dictionaryValueRepository::delete);
+
+    // update the rest
     return dictionaryValues.stream()
       .map(dv -> update(dictionaryId, dv))
       .collect(Collectors.toList());
